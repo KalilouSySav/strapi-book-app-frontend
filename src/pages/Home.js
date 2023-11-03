@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import Book from '../components/Book'
 import './home.css'
-import {Allbooks} from '../data.js'
 import axios from 'axios'
 import MeiliSearch from "meilisearch";
-import {useRef, useCallback} from 'react'
+
+const MEILISEARCH_HOST = 'http://52.15.54.185/';
+const MEILISEARCH_API_KEY = 'f5e181da4165526ba3e6f1d456c7f712bb580b0efeefd5e82718bad2afa9b9ad';
+const BOOKS_PER_PAGE = 15;
 
 function Home() {
-
   const [books, setBooks] = useState([])
   const URL = "http://localhost:1337/api/books"
   const observerElem = useRef(null)
@@ -15,31 +16,27 @@ function Home() {
   const [offset, setOffset] = useState(0)
   const [lastPage, setLastPage] = useState({})
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const client = new MeiliSearch({
-      host: 'http://52.15.54.185/',
-      apiKey: 'f5e181da4165526ba3e6f1d456c7f712bb580b0efeefd5e82718bad2afa9b9ad',
+      host: MEILISEARCH_HOST,
+      apiKey: MEILISEARCH_API_KEY,
     })
     const index = await client.getIndex('book')
     const booksData = await index.search('*', {
-      limit: 15,
+      limit: BOOKS_PER_PAGE,
       offset: offset 
     })
-    setBooks([...books,  ...booksData.hits])
+    setBooks(prevBooks => [...prevBooks,  ...booksData.hits])
     setLastPage(booksData)
-  }
+  }, [offset])
 
   useEffect(() => {
     setOffset(books.length)
-    if(books.length < lastPage.estimatedTotalHits){
-      setHasNextPage(true)
-    }else{
-      setHasNextPage(false)
-    }
-  }, [books])
+    setHasNextPage(books.length < lastPage.estimatedTotalHits)
+  }, [books, lastPage.estimatedTotalHits])
 
   const handleObserver = useCallback((entries) => {
-    const [target] = entries
+    const target = entries[0]
     if(target.isIntersecting && hasNextPage) {
       fetchData()
     }
@@ -53,15 +50,9 @@ function Home() {
     return () => observer.unobserve(element)
   }, [hasNextPage, handleObserver])
 
-  useEffect(() => {
-    fetchData()
-    sendData()
-  }, [])
-
-  const sendData = async () => {
-    let fetchedData;
+  const sendData = useCallback(async () => {
     const fetchCol = await axios.get(URL)
-    fetchedData = fetchCol.data.data
+    const fetchedData = fetchCol.data.data
 
     if (!fetchedData.length) {
       try {
@@ -85,7 +76,12 @@ function Home() {
     } else {
       console.log("data already uploadedd")
     }
-  }
+  }, [books, URL])
+
+  useEffect(() => {
+    fetchData()
+    sendData()
+  }, [fetchData, sendData])
 
   return (
     <div className='home'>
