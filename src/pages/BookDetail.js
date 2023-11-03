@@ -1,21 +1,25 @@
-import './bookDetail.css'
 import {useParams} from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { Allbooks } from '../data'
+import MeiliSearch from 'meilisearch'
+import './bookDetail.css'
 
 function BookDetail() {
-
   const [book, setBook] = useState({})
   const params = useParams()
 
   useEffect(() => {
-    const bookData = Allbooks.filter((book) => (
-      book.id === params.id
-    ))
-    setBook(bookData[0])
-    
+    const fetchData = async () => {
+      const client = new MeiliSearch({
+        host: 'http://52.15.54.185/',
+        apiKey: 'f5e181da4165526ba3e6f1d456c7f712bb580b0efeefd5e82718bad2afa9b9ad',
+      })
+      const index = await client.getIndex('book')
+      const bookData = await index.getDocument(`book-${params.id}`)
+      setBook(bookData)
+    }
+    fetchData()
   }, [params])
-
+  
   return (
     <div className='bookDetail wrapper'>
       <div className='bookDetail__top'>
