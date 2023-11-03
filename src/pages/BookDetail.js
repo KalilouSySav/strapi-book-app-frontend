@@ -10,7 +10,7 @@ function BookDetail() {
   useEffect(() => {
     const fetchData = async () => {
       const client = new MeiliSearch({
-        host: 'http://52.15.54.185/',
+        host: 'https://52.15.54.185/',
         apiKey: 'f5e181da4165526ba3e6f1d456c7f712bb580b0efeefd5e82718bad2afa9b9ad',
       })
       const index = await client.getIndex('book')

@@ -4,7 +4,7 @@ import './home.css'
 import axios from 'axios'
 import MeiliSearch from "meilisearch";
 
-const MEILISEARCH_HOST = 'http://52.15.54.185/';
+const MEILISEARCH_HOST = 'https://52.15.54.185/';
 const MEILISEARCH_API_KEY = 'f5e181da4165526ba3e6f1d456c7f712bb580b0efeefd5e82718bad2afa9b9ad';
 const BOOKS_PER_PAGE = 15;
 
