@@ -10,8 +10,8 @@ function BookDetail() {
   useEffect(() => {
     const fetchData = async () => {
       const client = new MeiliSearch({
-        host: 'https://52.15.54.185/',
-        apiKey: 'f5e181da4165526ba3e6f1d456c7f712bb580b0efeefd5e82718bad2afa9b9ad',
+        host: 'https://kss-meilisearch-dev-001.azurewebsites.net/',
+        apiKey: '92d88d35-04aa-4fff-bb6e-a147017316e1',
       })
       const index = await client.getIndex('book')
       const bookData = await index.getDocument(`book-${params.id}`)

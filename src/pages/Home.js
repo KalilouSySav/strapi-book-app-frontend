@@ -4,8 +4,8 @@ import './home.css'
 import axios from 'axios'
 import MeiliSearch from "meilisearch";
 
-const MEILISEARCH_HOST = 'https://52.15.54.185/';
-const MEILISEARCH_API_KEY = 'f5e181da4165526ba3e6f1d456c7f712bb580b0efeefd5e82718bad2afa9b9ad';
+const MEILISEARCH_HOST = 'https://kss-meilisearch-dev-001.azurewebsites.net/';
+const MEILISEARCH_API_KEY = '92d88d35-04aa-4fff-bb6e-a147017316e1';
 const BOOKS_PER_PAGE = 15;
 
 function Home() {
@@ -100,7 +100,8 @@ function Home() {
         <div className='books'>
           {books?.map((book) => (
             <Book
-              key={book.id}
+              // key={book.id}
+              key={book.objectID}
               title={book.title}
               image={book.image}
               authors={book.authors}
